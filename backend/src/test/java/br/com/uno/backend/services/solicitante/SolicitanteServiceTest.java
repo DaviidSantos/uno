@@ -11,6 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,5 +49,18 @@ public class SolicitanteServiceTest {
         assertThrows(SolicitanteNotFoundException.class, () -> {
             Optional<Solicitante> solicitante = solicitanteService.procurarSolicitantePeloCnpj("12345678912346");
         });
+    }
+
+    @Test
+    @DisplayName("Procurar Lista de Solicitantes")
+    public void listarSolicitantes() {
+        when(solicitanteRepository.findAll()).thenReturn(Arrays.asList(
+                new Solicitante("12345678912345", "Solicitante Teste", "Endereço Teste"),
+                new Solicitante("12345678912346", "Solicitante Teste2", "Endereço Teste2"),
+                new Solicitante("12345678912347", "Solicitante Teste3", "Endereço Teste3")
+        ));
+
+        List<Solicitante> solicitantes = solicitanteService.listarSolicitantes();
+        assertEquals(solicitantes, solicitanteRepository.findAll());
     }
 }

@@ -5,6 +5,7 @@ import br.com.uno.backend.api.solicitante.exceptions.SolicitanteNotFoundExceptio
 import br.com.uno.backend.api.solicitante.repository.SolicitanteRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,5 +22,9 @@ public class SolicitanteService {
         }
 
         return solicitanteRepository.findById(cnpj);
+    }
+
+    public List<Solicitante> listarSolicitantes() {
+        return solicitanteRepository.findAll();
     }
 }
