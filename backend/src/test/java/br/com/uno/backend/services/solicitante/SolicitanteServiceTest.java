@@ -1,5 +1,6 @@
 package br.com.uno.backend.services.solicitante;
 
+import br.com.uno.backend.api.solicitante.dto.SolicitanteDto;
 import br.com.uno.backend.api.solicitante.entidade.Solicitante;
 import br.com.uno.backend.api.solicitante.exceptions.SolicitanteNotFoundException;
 import br.com.uno.backend.api.solicitante.repository.SolicitanteRepository;
@@ -34,10 +35,8 @@ public class SolicitanteServiceTest {
     @Test
     @DisplayName("Procurar Solicitante Pelo Cnpj")
     public void procurarSolicitantePeloCnpj() throws SolicitanteNotFoundException {
-        when(solicitanteRepository.findById("12345678912345")).thenReturn(Optional.of(new Solicitante(
-                "12345678912345",
-                "Solicitante Teste",
-                "Endereço Teste")));
+        when(solicitanteRepository.findById("12345678912345"))
+                .thenReturn(Optional.of(new Solicitante("12345678912345", "Solicitante Teste", "Endereço Teste")));
         Optional<Solicitante> solicitante = solicitanteService.procurarSolicitantePeloCnpj("12345678912345");
         assertEquals(solicitante, solicitanteRepository.findById("12345678912345"));
     }
@@ -62,5 +61,16 @@ public class SolicitanteServiceTest {
 
         List<Solicitante> solicitantes = solicitanteService.listarSolicitantes();
         assertEquals(solicitantes, solicitanteRepository.findAll());
+    }
+
+    @Test
+    @DisplayName("Cadastrar Solicitante")
+    public void cadastrarSolicitante() {
+        when(solicitanteRepository.save(new Solicitante("12345678912345", "Solicitante Teste", "Endereço Teste")))
+                .thenReturn(new Solicitante("12345678912345", "Solicitante Teste", "Endereço Teste"));
+
+        SolicitanteDto solicitanteDto = new SolicitanteDto("12345678912345", "Solicitante Teste", "Endereço Teste");
+        Solicitante solicitante = solicitanteService.cadastrarSolicitante(solicitanteDto);
+        assertEquals(solicitante, solicitanteRepository.save(new Solicitante("12345678912345", "Solicitante Teste", "Endereço Teste")));
     }
 }

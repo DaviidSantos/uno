@@ -1,10 +1,13 @@
 package br.com.uno.backend.api.solicitante.service;
 
+import br.com.uno.backend.api.solicitante.dto.SolicitanteDto;
 import br.com.uno.backend.api.solicitante.entidade.Solicitante;
 import br.com.uno.backend.api.solicitante.exceptions.SolicitanteNotFoundException;
 import br.com.uno.backend.api.solicitante.repository.SolicitanteRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,5 +29,12 @@ public class SolicitanteService {
 
     public List<Solicitante> listarSolicitantes() {
         return solicitanteRepository.findAll();
+    }
+
+    @Transactional
+    public Solicitante cadastrarSolicitante(SolicitanteDto solicitanteDto) {
+        Solicitante solicitante = new Solicitante();
+        BeanUtils.copyProperties(solicitanteDto, solicitante);
+        return solicitanteRepository.save(solicitante);
     }
 }
