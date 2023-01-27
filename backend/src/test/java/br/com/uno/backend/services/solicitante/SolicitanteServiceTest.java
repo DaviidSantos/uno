@@ -2,6 +2,7 @@ package br.com.uno.backend.services.solicitante;
 
 import br.com.uno.backend.api.solicitante.dto.SolicitanteDto;
 import br.com.uno.backend.api.solicitante.entidade.Solicitante;
+import br.com.uno.backend.api.solicitante.exceptions.CnpjJaCadastradoException;
 import br.com.uno.backend.api.solicitante.exceptions.SolicitanteNotFoundException;
 import br.com.uno.backend.api.solicitante.repository.SolicitanteRepository;
 import br.com.uno.backend.api.solicitante.service.SolicitanteService;
@@ -65,12 +66,24 @@ public class SolicitanteServiceTest {
 
     @Test
     @DisplayName("Cadastrar Solicitante")
-    public void cadastrarSolicitante() {
+    public void cadastrarSolicitante() throws CnpjJaCadastradoException {
         when(solicitanteRepository.save(new Solicitante("12345678912345", "Solicitante Teste", "Endereço Teste")))
                 .thenReturn(new Solicitante("12345678912345", "Solicitante Teste", "Endereço Teste"));
 
         SolicitanteDto solicitanteDto = new SolicitanteDto("12345678912345", "Solicitante Teste", "Endereço Teste");
         Solicitante solicitante = solicitanteService.cadastrarSolicitante(solicitanteDto);
         assertEquals(solicitante, solicitanteRepository.save(new Solicitante("12345678912345", "Solicitante Teste", "Endereço Teste")));
+    }
+
+    @Test
+    @DisplayName("Cadastrar Solicitante Quando CNPJ já existe")
+    public void cadastrarSolicitante_QuandoCnpjJaExiste() {
+        when(solicitanteRepository.findById("12345678912346"))
+                .thenReturn(Optional.of(new Solicitante("12345678912346", "Solicitante Teste", "Endereço Teste")));
+
+        assertThrows(CnpjJaCadastradoException.class, () -> {
+            SolicitanteDto solicitanteDto = new SolicitanteDto("12345678912346", "Solicitante Teste", "Endereço Teste");
+            Solicitante solicitante = solicitanteService.cadastrarSolicitante(solicitanteDto);
+        });
     }
 }

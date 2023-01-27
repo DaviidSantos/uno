@@ -2,6 +2,7 @@ package br.com.uno.backend.api.solicitante.service;
 
 import br.com.uno.backend.api.solicitante.dto.SolicitanteDto;
 import br.com.uno.backend.api.solicitante.entidade.Solicitante;
+import br.com.uno.backend.api.solicitante.exceptions.CnpjJaCadastradoException;
 import br.com.uno.backend.api.solicitante.exceptions.SolicitanteNotFoundException;
 import br.com.uno.backend.api.solicitante.repository.SolicitanteRepository;
 import org.springframework.beans.BeanUtils;
@@ -32,7 +33,11 @@ public class SolicitanteService {
     }
 
     @Transactional
-    public Solicitante cadastrarSolicitante(SolicitanteDto solicitanteDto) {
+    public Solicitante cadastrarSolicitante(SolicitanteDto solicitanteDto) throws CnpjJaCadastradoException {
+        if (solicitanteRepository.findById(solicitanteDto.getCnpj()).isPresent()) {
+            throw new CnpjJaCadastradoException();
+        }
+
         Solicitante solicitante = new Solicitante();
         BeanUtils.copyProperties(solicitanteDto, solicitante);
         return solicitanteRepository.save(solicitante);
