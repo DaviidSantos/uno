@@ -29,10 +29,6 @@ public class SolicitanteServiceTest {
     @InjectMocks
     private SolicitanteService solicitanteService;
 
-    @BeforeEach
-    void setMockOutput() {
-    }
-
     @Test
     @DisplayName("Procurar Solicitante Pelo Cnpj")
     public void procurarSolicitantePeloCnpj() throws SolicitanteNotFoundException {
