@@ -1,6 +1,7 @@
 package br.com.uno.backend.api.solicitacaodeanalise.service;
 
 import br.com.uno.backend.api.solicitacaodeanalise.entidade.SolicitacaoDeAnalise;
+import br.com.uno.backend.api.solicitacaodeanalise.exceptions.SolicitacaoDeAnaliseNotFound;
 import br.com.uno.backend.api.solicitacaodeanalise.repository.SolicitacaoDeAnaliseRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,11 @@ public class SolicitacaoDeAnaliseService {
         this.solicitacaoDeAnaliseRepository = solicitacaoDeAnaliseRepository;
     }
 
-    public Optional<SolicitacaoDeAnalise> procurarSolicitacaoDeAnalise(String id) {
+    public Optional<SolicitacaoDeAnalise> procurarSolicitacaoDeAnalise(String id) throws SolicitacaoDeAnaliseNotFound {
+        if (solicitacaoDeAnaliseRepository.findById(id).isEmpty()) {
+            throw new SolicitacaoDeAnaliseNotFound();
+        }
+
         return solicitacaoDeAnaliseRepository.findById(id);
     }
 }

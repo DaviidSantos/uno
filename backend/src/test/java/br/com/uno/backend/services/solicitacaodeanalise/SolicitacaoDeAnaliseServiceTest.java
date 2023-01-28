@@ -30,7 +30,7 @@ public class SolicitacaoDeAnaliseServiceTest {
 
     @Test
     @DisplayName("Procurar Solicitação de Análise pelo ID")
-    public void procurarSolicitacaoDeAnalisePeloId() {
+    public void procurarSolicitacaoDeAnalisePeloId() throws SolicitacaoDeAnaliseNotFound {
         Solicitante solicitante = new Solicitante("12345678912345", "Teste", "Teste");
         SolicitacaoDeAnalise solicitacaoDeAnalise = new SolicitacaoDeAnalise(
                 "SA_00001",
@@ -46,5 +46,15 @@ public class SolicitacaoDeAnaliseServiceTest {
         when(solicitacaoDeAnaliseRepository.findById("SA_00001")).thenReturn(Optional.of(solicitacaoDeAnalise));
         Optional<SolicitacaoDeAnalise> solicitacaoDeAnalise1 = solicitacaoDeAnaliseService.procurarSolicitacaoDeAnalise("SA_00001");
         assertEquals(solicitacaoDeAnalise1.get(), solicitacaoDeAnalise);
+    }
+
+    @Test
+    @DisplayName("Procurar Solicitação de Análise pelo ID Quando Solicitação de Análise não existe")
+    public void procurarSolicitacaoDeAnalise_QuandoSolicitacaoDeAnaliseNaoExiste() {
+        when(solicitacaoDeAnaliseRepository.findById(any())).thenReturn(Optional.empty());
+
+        assertThrows(SolicitacaoDeAnaliseNotFound.class, () -> {
+            Optional<SolicitacaoDeAnalise> solicitacaoDeAnalise = solicitacaoDeAnaliseService.procurarSolicitacaoDeAnalise("SA_00001");
+        });
     }
 }
