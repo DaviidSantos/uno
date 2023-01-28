@@ -2,6 +2,7 @@ package br.com.uno.backend.controllers.solicitante;
 
 import br.com.uno.backend.api.solicitante.controller.SolicitanteController;
 import br.com.uno.backend.api.solicitante.entidade.Solicitante;
+import br.com.uno.backend.api.solicitante.exceptions.SolicitanteNotFoundException;
 import br.com.uno.backend.api.solicitante.service.SolicitanteService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +32,7 @@ public class SolicitanteControllerTest {
     MockMvc mockMvc;
 
     @Test
-    @DisplayName("Procurar Solicitante Pelo CNPJ controller test")
+    @DisplayName("Procurar Solicitante Pelo CNPJ")
     public void procurarSolicitantePeloCnpj() throws Exception {
         Solicitante solicitante = new Solicitante("12345678912345", "Solicitante Teste", "Endereço Teste");
         Mockito.when(solicitanteService.procurarSolicitantePeloCnpj("12345678912345")).thenReturn(Optional.of(solicitante));
@@ -44,5 +45,14 @@ public class SolicitanteControllerTest {
                 .andExpect(jsonPath("$.endererco", Matchers.is("Endereço Teste")));
     }
 
+    @Test
+    @DisplayName("Procurar Solicitante Pelo CNPJ Quando Solicitante não Existe")
+    public void procurarSolicitantePeloCnpj_QuandoSolicitanteNaoExiste() throws Exception {
+        Mockito.when(solicitanteService.procurarSolicitantePeloCnpj("12345678912345")).thenThrow(SolicitanteNotFoundException.class);
 
+        mockMvc.perform(get("/api/solicitantes/{cnpj}", "12345678912345"))
+                .andExpect(status().isNotFound());
+    }
+
+    
 }
