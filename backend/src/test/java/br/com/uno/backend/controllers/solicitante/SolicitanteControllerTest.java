@@ -6,6 +6,7 @@ import br.com.uno.backend.api.solicitante.entidade.Solicitante;
 import br.com.uno.backend.api.solicitante.exceptions.CnpjJaCadastradoException;
 import br.com.uno.backend.api.solicitante.exceptions.SolicitanteNotFoundException;
 import br.com.uno.backend.api.solicitante.service.SolicitanteService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -99,12 +100,24 @@ public class SolicitanteControllerTest {
 
         mockMvc.perform(post("/api/solicitantes")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(solicitante)))
+                .content(objectMapper.writeValueAsString(solicitanteDto)))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.cnpj", is("12345678912345")))
                 .andExpect(jsonPath("$.nomeFantasia", is("Solicitante Teste")))
                 .andExpect(jsonPath("$.endererco", is("Endereço Teste")));
+
+    }
+
+    @Test
+    @DisplayName("Cadastrar Solicitante Quando Solicitante Já Está Cadastrado")
+    public void cadastrarSolicitante_QuandoSolicitanteJaCadastrado() throws Exception {
+        when(solicitanteService.cadastrarSolicitante(any())).thenThrow(CnpjJaCadastradoException.class);
+        SolicitanteDto solicitanteDto = new SolicitanteDto("12345678912345", "Solicitante Teste","Endereço Teste");
+        mockMvc.perform(post("/api/solicitantes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(solicitanteDto)))
+                .andExpect(status().isConflict());
 
     }
 }

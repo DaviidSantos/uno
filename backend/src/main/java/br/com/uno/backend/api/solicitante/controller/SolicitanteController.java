@@ -40,4 +40,11 @@ public class SolicitanteController {
     public String handleSolicitanteNotFoundException(SolicitanteNotFoundException solicitanteNotFoundException) {
         return solicitanteNotFoundException.getMessage();
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public String handleCnpjJaCadastradoException(CnpjJaCadastradoException cnpjJaCadastradoException) {
+        return cnpjJaCadastradoException.getMessage();
+    }
 }
