@@ -1,6 +1,8 @@
 package br.com.uno.backend.api.solicitante.controller;
 
+import br.com.uno.backend.api.solicitante.dto.SolicitanteDto;
 import br.com.uno.backend.api.solicitante.entidade.Solicitante;
+import br.com.uno.backend.api.solicitante.exceptions.CnpjJaCadastradoException;
 import br.com.uno.backend.api.solicitante.exceptions.SolicitanteNotFoundException;
 import br.com.uno.backend.api.solicitante.service.SolicitanteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,11 @@ public class SolicitanteController {
     @GetMapping("/api/solicitantes")
     public ResponseEntity<List<Solicitante>> listarSolicitantes() {
         return ResponseEntity.status(HttpStatus.OK).body(solicitanteService.listarSolicitantes());
+    }
+
+    @PostMapping("/api/solicitantes")
+    public ResponseEntity<Solicitante> cadastrarSolicitante(@RequestBody SolicitanteDto solicitanteDto) throws CnpjJaCadastradoException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(solicitanteService.cadastrarSolicitante(solicitanteDto));
     }
 
     @ExceptionHandler

@@ -1,9 +1,12 @@
 package br.com.uno.backend.controllers.solicitante;
 
 import br.com.uno.backend.api.solicitante.controller.SolicitanteController;
+import br.com.uno.backend.api.solicitante.dto.SolicitanteDto;
 import br.com.uno.backend.api.solicitante.entidade.Solicitante;
+import br.com.uno.backend.api.solicitante.exceptions.CnpjJaCadastradoException;
 import br.com.uno.backend.api.solicitante.exceptions.SolicitanteNotFoundException;
 import br.com.uno.backend.api.solicitante.service.SolicitanteService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,9 +24,11 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
@@ -34,6 +39,9 @@ public class SolicitanteControllerTest {
 
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @Test
     @DisplayName("Procurar Solicitante Pelo CNPJ")
@@ -80,6 +88,23 @@ public class SolicitanteControllerTest {
                 .andExpect(jsonPath("$[0].endererco", is("Endereço Teste")))
                 .andExpect(jsonPath("$[1].endererco", is("Endereço Teste2")))
                 .andExpect(jsonPath("$[2].endererco", is("Endereço Teste3")));
+    }
+
+    @Test
+    @DisplayName("Cadastrar Solicitante")
+    public void cadastrarSolicitante() throws Exception {
+        SolicitanteDto solicitanteDto = new SolicitanteDto("12345678912345", "Solicitante Teste","Endereço Teste");
+        Solicitante solicitante = new Solicitante("12345678912345", "Solicitante Teste","Endereço Teste");
+        when(solicitanteService.cadastrarSolicitante(any())).thenReturn(solicitante);
+
+        mockMvc.perform(post("/api/solicitantes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(solicitante)))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.cnpj", is("12345678912345")))
+                .andExpect(jsonPath("$.nomeFantasia", is("Solicitante Teste")))
+                .andExpect(jsonPath("$.endererco", is("Endereço Teste")));
 
     }
 }
