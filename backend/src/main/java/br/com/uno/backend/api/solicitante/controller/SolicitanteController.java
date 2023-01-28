@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -16,9 +17,14 @@ public class SolicitanteController {
     private SolicitanteService solicitanteService;
 
     @GetMapping("/api/solicitantes/{cnpj}")
-    public ResponseEntity<Object> procurarSolicitantePeloCnpj(@PathVariable String cnpj) throws SolicitanteNotFoundException {
+    public ResponseEntity<Solicitante> procurarSolicitantePeloCnpj(@PathVariable String cnpj) throws SolicitanteNotFoundException {
         Optional<Solicitante> solicitante = solicitanteService.procurarSolicitantePeloCnpj(cnpj);
         return ResponseEntity.status(HttpStatus.OK).body(solicitante.get());
+    }
+
+    @GetMapping("/api/solicitantes")
+    public ResponseEntity<List<Solicitante>> listarSolicitantes() {
+        return ResponseEntity.status(HttpStatus.OK).body(solicitanteService.listarSolicitantes());
     }
 
     @ExceptionHandler
