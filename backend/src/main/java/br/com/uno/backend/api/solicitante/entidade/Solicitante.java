@@ -11,19 +11,18 @@ public class Solicitante {
     @Id
     @Column(updatable = false, length = 14)
     private String cnpj;
-
     @Column(nullable = false, name = "nome_fantasia")
     private String nomeFantasia;
     @Column(nullable = false)
-    private String endererco;
+    private String endereco;
 
     public Solicitante() {
     }
 
-    public Solicitante(String cnpj, String nomeFantasia, String endererco) {
+    public Solicitante(String cnpj, String nomeFantasia, String endereco) {
         this.cnpj = cnpj;
         this.nomeFantasia = nomeFantasia;
-        this.endererco = endererco;
+        this.endereco = endereco;
     }
 
     public String getCnpj() {
@@ -43,11 +42,11 @@ public class Solicitante {
     }
 
     public String getEndererco() {
-        return endererco;
+        return endereco;
     }
 
     public void setEndererco(String endererco) {
-        this.endererco = endererco;
+        this.endereco = endererco;
     }
 
     @Override
