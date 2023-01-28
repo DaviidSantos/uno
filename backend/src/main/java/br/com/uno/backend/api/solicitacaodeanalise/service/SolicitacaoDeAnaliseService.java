@@ -5,6 +5,7 @@ import br.com.uno.backend.api.solicitacaodeanalise.exceptions.SolicitacaoDeAnali
 import br.com.uno.backend.api.solicitacaodeanalise.repository.SolicitacaoDeAnaliseRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,5 +22,9 @@ public class SolicitacaoDeAnaliseService {
         }
 
         return solicitacaoDeAnaliseRepository.findById(id);
+    }
+
+    public List<SolicitacaoDeAnalise> listarSolicitacoesDeAnalise() {
+        return solicitacaoDeAnaliseRepository.findAll();
     }
 }

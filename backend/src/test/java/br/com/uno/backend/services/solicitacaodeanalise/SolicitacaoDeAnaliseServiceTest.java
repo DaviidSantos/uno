@@ -13,6 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,5 +58,33 @@ public class SolicitacaoDeAnaliseServiceTest {
         assertThrows(SolicitacaoDeAnaliseNotFound.class, () -> {
             Optional<SolicitacaoDeAnalise> solicitacaoDeAnalise = solicitacaoDeAnaliseService.procurarSolicitacaoDeAnalise("SA_00001");
         });
+    }
+
+    @Test
+    @DisplayName("Listar Solicitações de Análise")
+    public void listarSolicitacoesDeAnalise() {
+        when(solicitacaoDeAnaliseRepository.findAll()).thenReturn(Arrays.asList(
+                new SolicitacaoDeAnalise("SA_00001",
+                        null,
+                        TipoDeAnalise.Solubilidade,
+                        StatusSolicitacaoDeAnalise.Em_Andamento,
+                        "Teste",
+                        "Teste",
+                        "Responsavel Teste",
+                        "Email Teste",
+                        "Telefone Teste"),
+                new SolicitacaoDeAnalise("SA_00002",
+                        null,
+                        TipoDeAnalise.Solubilidade,
+                        StatusSolicitacaoDeAnalise.Em_Andamento,
+                        "Teste",
+                        "Teste",
+                        "Responsavel Teste",
+                        "Email Teste",
+                        "Telefone Teste")
+        ));
+
+        List<SolicitacaoDeAnalise> solicitacoesDeAnalise = solicitacaoDeAnaliseService.listarSolicitacoesDeAnalise();
+        assertEquals(solicitacoesDeAnalise, solicitacaoDeAnaliseRepository.findAll());
     }
 }
