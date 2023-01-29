@@ -8,6 +8,8 @@ import br.com.uno.backend.api.solicitacaodeanalise.exceptions.SolicitacaoDeAnali
 import br.com.uno.backend.api.solicitacaodeanalise.repository.SolicitacaoDeAnaliseRepository;
 import br.com.uno.backend.api.solicitacaodeanalise.service.SolicitacaoDeAnaliseService;
 import br.com.uno.backend.api.solicitante.entidade.Solicitante;
+import br.com.uno.backend.api.solicitante.exceptions.SolicitanteNotFoundException;
+import br.com.uno.backend.api.solicitante.service.SolicitanteService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,9 @@ import static org.mockito.Mockito.when;
 public class SolicitacaoDeAnaliseServiceTest {
     @Mock
     private SolicitacaoDeAnaliseRepository solicitacaoDeAnaliseRepository;
+
+    @Mock
+    private SolicitanteService solicitanteService;
 
     @InjectMocks
     private SolicitacaoDeAnaliseService solicitacaoDeAnaliseService;
@@ -92,7 +97,7 @@ public class SolicitacaoDeAnaliseServiceTest {
 
     @Test
     @DisplayName("Cadastrar Solicitação de Análise")
-    public void cadastrarSolicitacaoDeAnalise() {
+    public void cadastrarSolicitacaoDeAnalise() throws SolicitanteNotFoundException {
         when(solicitacaoDeAnaliseRepository.save(any())).thenReturn(
                 new SolicitacaoDeAnalise(
                         "SA_00001",
@@ -105,6 +110,8 @@ public class SolicitacaoDeAnaliseServiceTest {
                         "Email Teste",
                         "Telefone Teste")
         );
+
+        when(solicitanteService.procurarSolicitantePeloCnpj(any())).thenReturn(Optional.of(new Solicitante("12345678912345", "Solicitante Teste", "Endereço Teste")));
 
         SolicitacaoDeAnaliseDto solicitacaoDeAnaliseDto = new SolicitacaoDeAnaliseDto(
                 null,
@@ -120,5 +127,26 @@ public class SolicitacaoDeAnaliseServiceTest {
         SolicitacaoDeAnalise solicitacaoDeAnalise = solicitacaoDeAnaliseService.cadastrarSolicitacaoDeAnalise(solicitacaoDeAnaliseDto);
         Assertions.assertNotNull(solicitacaoDeAnalise);
         assertEquals("SA_00001", solicitacaoDeAnalise.getId());
+    }
+
+    @Test
+    @DisplayName("Cadastrar Solicitação de Análise quando Solicitante não Existe")
+    public void cadastrarSolicitacaoDeAnalise_QuandoSolicitanteNaoExiste() throws SolicitanteNotFoundException {
+        when(solicitanteService.procurarSolicitantePeloCnpj(any())).thenReturn(Optional.empty());
+
+        SolicitacaoDeAnaliseDto solicitacaoDeAnaliseDto = new SolicitacaoDeAnaliseDto(
+                null,
+                "Solubilidade",
+                "Em_Andamento",
+                "Teste",
+                "Teste",
+                "Responsavel Teste",
+                "Email Teste",
+                "Telefone Teste"
+        );
+
+        assertThrows(SolicitanteNotFoundException.class, () -> {
+            SolicitacaoDeAnalise solicitacaoDeAnalise = solicitacaoDeAnaliseService.cadastrarSolicitacaoDeAnalise(solicitacaoDeAnaliseDto);
+        });
     }
 }

@@ -6,6 +6,9 @@ import br.com.uno.backend.api.solicitacaodeanalise.entidade.enums.StatusSolicita
 import br.com.uno.backend.api.solicitacaodeanalise.entidade.enums.TipoDeAnalise;
 import br.com.uno.backend.api.solicitacaodeanalise.exceptions.SolicitacaoDeAnaliseNotFound;
 import br.com.uno.backend.api.solicitacaodeanalise.repository.SolicitacaoDeAnaliseRepository;
+import br.com.uno.backend.api.solicitante.entidade.Solicitante;
+import br.com.uno.backend.api.solicitante.exceptions.SolicitanteNotFoundException;
+import br.com.uno.backend.api.solicitante.service.SolicitanteService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +19,11 @@ import java.util.Optional;
 @Service
 public class SolicitacaoDeAnaliseService {
     private final SolicitacaoDeAnaliseRepository solicitacaoDeAnaliseRepository;
+    private final SolicitanteService solicitanteService;
 
-    public SolicitacaoDeAnaliseService(SolicitacaoDeAnaliseRepository solicitacaoDeAnaliseRepository) {
+    public SolicitacaoDeAnaliseService(SolicitacaoDeAnaliseRepository solicitacaoDeAnaliseRepository, SolicitanteService solicitanteService) {
         this.solicitacaoDeAnaliseRepository = solicitacaoDeAnaliseRepository;
+        this.solicitanteService = solicitanteService;
     }
 
     public Optional<SolicitacaoDeAnalise> procurarSolicitacaoDeAnalise(String id) throws SolicitacaoDeAnaliseNotFound {
@@ -34,9 +39,15 @@ public class SolicitacaoDeAnaliseService {
     }
 
     @Transactional
-    public SolicitacaoDeAnalise cadastrarSolicitacaoDeAnalise(SolicitacaoDeAnaliseDto solicitacaoDeAnaliseDto) {
+    public SolicitacaoDeAnalise cadastrarSolicitacaoDeAnalise(SolicitacaoDeAnaliseDto solicitacaoDeAnaliseDto) throws SolicitanteNotFoundException {
+        if (solicitanteService.procurarSolicitantePeloCnpj(solicitacaoDeAnaliseDto.getCnpjSolicitante()).isEmpty()) {
+            throw new SolicitanteNotFoundException();
+        }
+
         SolicitacaoDeAnalise solicitacaoDeAnalise = new SolicitacaoDeAnalise();
+        Solicitante solicitante = solicitanteService.procurarSolicitantePeloCnpj(solicitacaoDeAnaliseDto.getCnpjSolicitante()).get();
         BeanUtils.copyProperties(solicitacaoDeAnaliseDto, solicitacaoDeAnalise);
+        solicitacaoDeAnalise.setSolicitante(solicitante);
         solicitacaoDeAnalise.setTipoDeAnalise(TipoDeAnalise.valueOf(solicitacaoDeAnaliseDto.getTipoDeAnalise()));
         solicitacaoDeAnalise.setStatusSolicitacaoDeAnalise(StatusSolicitacaoDeAnalise.valueOf(solicitacaoDeAnaliseDto.getStatusSolicitacaoDeAnalise()));
         return solicitacaoDeAnaliseRepository.save(solicitacaoDeAnalise);
