@@ -152,7 +152,7 @@ public class SolicitacaoDeAnaliseServiceTest {
 
     @Test
     @DisplayName("Atualizar Status da Solicitção De Análise")
-    public void atualizarStatusSolicitaçãoDeAnalise() {
+    public void atualizarStatusSolicitaçãoDeAnalise() throws SolicitacaoDeAnaliseNotFound {
         when(solicitacaoDeAnaliseRepository.findById(any())).thenReturn(
                 Optional.of(new SolicitacaoDeAnalise(
                         "SA_00001",
@@ -168,5 +168,14 @@ public class SolicitacaoDeAnaliseServiceTest {
 
         SolicitacaoDeAnalise solicitacaoDeAnalise = solicitacaoDeAnaliseService.atualizarStatusSolicitacaoDeAnalise("SA_00001", "Concluida");
         assertEquals(StatusSolicitacaoDeAnalise.Concluida, solicitacaoDeAnalise.getStatusSolicitacaoDeAnalise());
+    }
+
+    @Test
+    @DisplayName("Atualizar Solicitação de Análise Quando Solicitação de Análise Não Existe")
+    public void atualizarStatusSolicitacaoDeAnalise_QuandoSolicitacaoDeAnaliseNaoExiste() {
+        when(solicitacaoDeAnaliseRepository.findById(any())).thenReturn(Optional.empty());
+        assertThrows(SolicitacaoDeAnaliseNotFound.class, () -> {
+            SolicitacaoDeAnalise solicitacaoDeAnalise = solicitacaoDeAnaliseService.atualizarStatusSolicitacaoDeAnalise("SA_00001", "Concluida");
+        });
     }
 }

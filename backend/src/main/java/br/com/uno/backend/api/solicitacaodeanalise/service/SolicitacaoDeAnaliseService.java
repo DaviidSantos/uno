@@ -54,7 +54,11 @@ public class SolicitacaoDeAnaliseService {
     }
 
     @Transactional
-    public SolicitacaoDeAnalise atualizarStatusSolicitacaoDeAnalise(String id, String status) {
+    public SolicitacaoDeAnalise atualizarStatusSolicitacaoDeAnalise(String id, String status) throws SolicitacaoDeAnaliseNotFound {
+        if (solicitacaoDeAnaliseRepository.findById(id).isEmpty()){
+            throw new SolicitacaoDeAnaliseNotFound();
+        }
+
         Optional<SolicitacaoDeAnalise> solicitacaoDeAnalise = solicitacaoDeAnaliseRepository.findById(id);
         solicitacaoDeAnalise.get().setStatusSolicitacaoDeAnalise(StatusSolicitacaoDeAnalise.valueOf(status));
         return solicitacaoDeAnalise.get();
