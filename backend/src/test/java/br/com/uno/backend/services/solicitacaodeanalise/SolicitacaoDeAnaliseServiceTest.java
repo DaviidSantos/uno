@@ -1,5 +1,6 @@
 package br.com.uno.backend.services.solicitacaodeanalise;
 
+import br.com.uno.backend.api.solicitacaodeanalise.dto.SolicitacaoDeAnaliseDto;
 import br.com.uno.backend.api.solicitacaodeanalise.entidade.SolicitacaoDeAnalise;
 import br.com.uno.backend.api.solicitacaodeanalise.entidade.enums.StatusSolicitacaoDeAnalise;
 import br.com.uno.backend.api.solicitacaodeanalise.entidade.enums.TipoDeAnalise;
@@ -7,6 +8,7 @@ import br.com.uno.backend.api.solicitacaodeanalise.exceptions.SolicitacaoDeAnali
 import br.com.uno.backend.api.solicitacaodeanalise.repository.SolicitacaoDeAnaliseRepository;
 import br.com.uno.backend.api.solicitacaodeanalise.service.SolicitacaoDeAnaliseService;
 import br.com.uno.backend.api.solicitante.entidade.Solicitante;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -86,5 +88,37 @@ public class SolicitacaoDeAnaliseServiceTest {
 
         List<SolicitacaoDeAnalise> solicitacoesDeAnalise = solicitacaoDeAnaliseService.listarSolicitacoesDeAnalise();
         assertEquals(solicitacoesDeAnalise, solicitacaoDeAnaliseRepository.findAll());
+    }
+
+    @Test
+    @DisplayName("Cadastrar Solicitação de Análise")
+    public void cadastrarSolicitacaoDeAnalise() {
+        when(solicitacaoDeAnaliseRepository.save(any())).thenReturn(
+                new SolicitacaoDeAnalise(
+                        "SA_00001",
+                        null,
+                        TipoDeAnalise.Solubilidade,
+                        StatusSolicitacaoDeAnalise.Em_Andamento,
+                        "Testes",
+                        "Teste",
+                        "Responsavel Teste",
+                        "Email Teste",
+                        "Telefone Teste")
+        );
+
+        SolicitacaoDeAnaliseDto solicitacaoDeAnaliseDto = new SolicitacaoDeAnaliseDto(
+                null,
+                "Solubilidade",
+                "Em_Andamento",
+                "Teste",
+                "Teste",
+                "Responsavel Teste",
+                "Email Teste",
+                "Telefone Teste"
+        );
+
+        SolicitacaoDeAnalise solicitacaoDeAnalise = solicitacaoDeAnaliseService.cadastrarSolicitacaoDeAnalise(solicitacaoDeAnaliseDto);
+        Assertions.assertNotNull(solicitacaoDeAnalise);
+        assertEquals("SA_00001", solicitacaoDeAnalise.getId());
     }
 }
