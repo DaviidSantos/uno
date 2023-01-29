@@ -52,4 +52,11 @@ public class SolicitacaoDeAnaliseService {
         solicitacaoDeAnalise.setStatusSolicitacaoDeAnalise(StatusSolicitacaoDeAnalise.valueOf(solicitacaoDeAnaliseDto.getStatusSolicitacaoDeAnalise()));
         return solicitacaoDeAnaliseRepository.save(solicitacaoDeAnalise);
     }
+
+    @Transactional
+    public SolicitacaoDeAnalise atualizarStatusSolicitacaoDeAnalise(String id, String status) {
+        Optional<SolicitacaoDeAnalise> solicitacaoDeAnalise = solicitacaoDeAnaliseRepository.findById(id);
+        solicitacaoDeAnalise.get().setStatusSolicitacaoDeAnalise(StatusSolicitacaoDeAnalise.valueOf(status));
+        return solicitacaoDeAnalise.get();
+    }
 }

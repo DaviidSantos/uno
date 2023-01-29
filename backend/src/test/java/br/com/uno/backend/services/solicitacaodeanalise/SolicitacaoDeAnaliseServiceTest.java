@@ -149,4 +149,24 @@ public class SolicitacaoDeAnaliseServiceTest {
             SolicitacaoDeAnalise solicitacaoDeAnalise = solicitacaoDeAnaliseService.cadastrarSolicitacaoDeAnalise(solicitacaoDeAnaliseDto);
         });
     }
+
+    @Test
+    @DisplayName("Atualizar Status da Solicitção De Análise")
+    public void atualizarStatusSolicitaçãoDeAnalise() {
+        when(solicitacaoDeAnaliseRepository.findById(any())).thenReturn(
+                Optional.of(new SolicitacaoDeAnalise(
+                        "SA_00001",
+                        null,
+                        TipoDeAnalise.Degradação_Forçada,
+                        StatusSolicitacaoDeAnalise.Em_Andamento,
+                        "Testes",
+                        "Teste",
+                        "Responsavel Teste",
+                        "Email Teste",
+                        "Telefone Teste"))
+        );
+
+        SolicitacaoDeAnalise solicitacaoDeAnalise = solicitacaoDeAnaliseService.atualizarStatusSolicitacaoDeAnalise("SA_00001", "Concluida");
+        assertEquals(StatusSolicitacaoDeAnalise.Concluida, solicitacaoDeAnalise.getStatusSolicitacaoDeAnalise());
+    }
 }
