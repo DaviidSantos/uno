@@ -1,9 +1,14 @@
 package br.com.uno.backend.api.solicitante.entidade;
 
 
+import br.com.uno.backend.api.solicitacaodeanalise.entidade.SolicitacaoDeAnalise;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -15,7 +20,8 @@ public class Solicitante {
     private String nomeFantasia;
     @Column(nullable = false)
     private String endereco;
-
+    @OneToMany(mappedBy = "solicitante")
+    private List<SolicitacaoDeAnalise> solicitacoesDeAnalise = new ArrayList<>();
     public Solicitante() {
     }
 
@@ -41,12 +47,16 @@ public class Solicitante {
         this.nomeFantasia = nomeFantasia;
     }
 
-    public String getEndererco() {
+    public String getEndereco() {
         return endereco;
     }
 
-    public void setEndererco(String endererco) {
+    public void setEndereco(String endererco) {
         this.endereco = endererco;
+    }
+
+    public List<SolicitacaoDeAnalise> getSolicitacoesDeAnalise() {
+        return solicitacoesDeAnalise;
     }
 
     @Override

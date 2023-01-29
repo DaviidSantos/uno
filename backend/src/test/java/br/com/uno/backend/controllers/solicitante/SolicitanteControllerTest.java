@@ -55,7 +55,7 @@ public class SolicitanteControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.cnpj", is("12345678912345")))
                 .andExpect(jsonPath("$.nomeFantasia", is("Solicitante Teste")))
-                .andExpect(jsonPath("$.endererco", is("Endereço Teste")));
+                .andExpect(jsonPath("$.endereco", is("Endereço Teste")));
     }
 
     @Test
@@ -86,9 +86,9 @@ public class SolicitanteControllerTest {
                 .andExpect(jsonPath("$[0].nomeFantasia", is("Solicitante Teste")))
                 .andExpect(jsonPath("$[1].nomeFantasia", is("Solicitante Teste2")))
                 .andExpect(jsonPath("$[2].nomeFantasia", is("Solicitante Teste3")))
-                .andExpect(jsonPath("$[0].endererco", is("Endereço Teste")))
-                .andExpect(jsonPath("$[1].endererco", is("Endereço Teste2")))
-                .andExpect(jsonPath("$[2].endererco", is("Endereço Teste3")));
+                .andExpect(jsonPath("$[0].endereco", is("Endereço Teste")))
+                .andExpect(jsonPath("$[1].endereco", is("Endereço Teste2")))
+                .andExpect(jsonPath("$[2].endereco", is("Endereço Teste3")));
     }
 
     @Test
@@ -105,7 +105,7 @@ public class SolicitanteControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.cnpj", is("12345678912345")))
                 .andExpect(jsonPath("$.nomeFantasia", is("Solicitante Teste")))
-                .andExpect(jsonPath("$.endererco", is("Endereço Teste")));
+                .andExpect(jsonPath("$.endereco", is("Endereço Teste")));
 
     }
 
